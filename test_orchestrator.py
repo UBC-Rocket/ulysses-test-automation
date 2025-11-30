@@ -14,9 +14,9 @@ args = parser.parse_args()
 def discover_test(test_dir="tests"):
     tests = {}
     for file in sorted(os.listdir(test_dir)):
-        parsed = file.split('_')
-        testid = parsed[2].split('.')[0]
-        if parsed[0] == "test" and testid.isdigit():
+        if file.startswith("test"):
+            parsed = file.split('_')
+            testid = parsed[1]
             tests[testid] = f"{test_dir}/{file}"
     return tests
 
@@ -65,6 +65,8 @@ def run_all_tests():
     print(f"Discovered {len(tests)} testfiles. \n")
 
     results = []
+
+    print(tests)
     
     for t in tests.keys():
         result = run_test(t)

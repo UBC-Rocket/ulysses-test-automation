@@ -7,23 +7,24 @@ from Utilities.serial_test import SerialTest
 
 def generate_message(count):
     message = ','.join(str(round(random.uniform(0, 361), 2)) for _ in range(count)) + '\r\n'
+    print(message)
     return message
 
-def high_freq_send(device, ser, freq):
+def high_freq_send(device, ser, freq, duration = 5):
     '''Send messages at a high frequency over the serial connection.'''
     period = 1/freq
     print(f"======Sending messages at {freq} Hz. Press Ctrl+C to stop.======")
 
     try:
         count = 14  #number of values in each message
+        start_time = time.time()
         next_time = time.perf_counter()
-        while True:
+        while (time.time() - start_time) < duration:
             # Calculate the next send time
             next_time += period
 
             message = generate_message(count)
             device.send_message(ser, message)
-            #print(message)
             #count += 1
             
             delay = next_time - time.perf_counter()
@@ -37,7 +38,7 @@ def high_freq_send(device, ser, freq):
 
 if __name__ == "__main__":
     device1 = SerialTest("/dev/cu.+", 57600)
-    #device1.print_desired_devices()
+    device1.print_desired_devices()
 
 
     ser_obj1 = device1.try_open_port("/dev/cu.usbserial-BG013W95") #change this line to change sending device
